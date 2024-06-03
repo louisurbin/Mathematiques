@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>pb3corps</title>
+<meta name="generator" content="MATLAB 24.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-06-03">
+<meta name="DC.source" content="pb3corps.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<pre class="codeinput">
+<span class="comment">% Param&egrave;tres du probl&egrave;me</span>
+mu = 0.0121505856;          <span class="comment">% rapport de la masse de la Lune &agrave; celle du syst&egrave;me Terre-Lune</span>
+w0 = 1;                     <span class="comment">% vitesse de rotation des corps primaires</span>
+q0 = [0.5; 0];            <span class="comment">% position initiale du corps &eacute;tudi&eacute;</span>
+p0 = [0; 1];                <span class="comment">% vitesse initiale du corps &eacute;tudi&eacute;</span>
+z0 = [q0; p0];              <span class="comment">% position et vitesse initiale du corps &eacute;tudi&eacute;</span>
+
+<span class="comment">% Intervalle d'int&eacute;gration</span>
+T0 = 2*pi/w0;               <span class="comment">% P&eacute;riode</span>
+T = 10*T0;
+tspan = [0 T];
+
+<span class="comment">% R&eacute;solution du syst&egrave;me d'&eacute;quations diff&eacute;rentielles</span>
+[t, z] = ode45(@(t, z) dyn(t, w0, z, mu), tspan, z0);
+
+<span class="comment">% Positions de la Terre et de la Lune</span>
+x_earth = -mu;
+y_earth = 0;
+x_moon = 1 - mu;
+y_moon = 0;
+
+<span class="comment">% Trac&eacute; de la trajectoire du troisi&egrave;me corps</span>
+figure;
+plot(z(:,1), z(:,2));
+hold <span class="string">on</span>;
+plot(x_earth, y_earth, <span class="string">'bo'</span>, <span class="string">'MarkerSize'</span>, 10, <span class="string">'MarkerFaceColor'</span>, <span class="string">'b'</span>); <span class="comment">% Terre</span>
+plot(x_moon, y_moon, <span class="string">'ro'</span>, <span class="string">'MarkerSize'</span>, 8, <span class="string">'MarkerFaceColor'</span>, <span class="string">'r'</span>);    <span class="comment">% Lune</span>
+<span class="comment">%h = quiver(q0(1), q0(2), p0(1)/5, p0(2)/5, 'r', 'LineWidth', 1.5, 'MaxHeadSize', 1);      % Vecteur de vitesse initial</span>
+<span class="comment">%text(q0(1) + 0.02 + h.UData/2, q0(2) + h.VData/2 , ' v0', 'Color', 'red', 'FontSize', 12); % Nom du vecteur</span>
+title(<span class="string">'Trajectoire du satellite'</span>);
+xlabel(<span class="string">'x'</span>);
+ylabel(<span class="string">'y'</span>);
+legend(<span class="string">'Trajectoire'</span>, <span class="string">'Terre'</span>, <span class="string">'Lune'</span>);
+grid <span class="string">on</span>;
+hold <span class="string">off</span>;
+</pre>
+<img vspace="5" hspace="5" src="pb3corps_01.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+% Paramètres du problème
+mu = 0.0121505856;          % rapport de la masse de la Lune à celle du système Terre-Lune
+w0 = 1;                     % vitesse de rotation des corps primaires
+q0 = [0.5; 0];            % position initiale du corps étudié
+p0 = [0; 1];                % vitesse initiale du corps étudié 
+z0 = [q0; p0];              % position et vitesse initiale du corps étudié
+
+% Intervalle d'intégration
+T0 = 2*pi/w0;               % Période
+T = 10*T0;
+tspan = [0 T];
+
+% Résolution du système d'équations différentielles
+[t, z] = ode45(@(t, z) dyn(t, w0, z, mu), tspan, z0);
+
+% Positions de la Terre et de la Lune
+x_earth = -mu;
+y_earth = 0;
+x_moon = 1 - mu;
+y_moon = 0;
+
+% Tracé de la trajectoire du troisième corps
+figure;
+plot(z(:,1), z(:,2));
+hold on;
+plot(x_earth, y_earth, 'bo', 'MarkerSize', 10, 'MarkerFaceColor', 'b'); % Terre
+plot(x_moon, y_moon, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');    % Lune
+%h = quiver(q0(1), q0(2), p0(1)/5, p0(2)/5, 'r', 'LineWidth', 1.5, 'MaxHeadSize', 1);      % Vecteur de vitesse initial
+%text(q0(1) + 0.02 + h.UData/2, q0(2) + h.VData/2 , ' v0', 'Color', 'red', 'FontSize', 12); % Nom du vecteur
+title('Trajectoire du satellite');
+xlabel('x');
+ylabel('y');
+legend('Trajectoire', 'Terre', 'Lune');
+grid on;
+hold off;
+
+
+##### SOURCE END #####
+-->
+</body>
+</html>
