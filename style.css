@@ -1,0 +1,23 @@
+h1
+{
+	color: red;
+}
+
+body
+{
+	background-color: purple;
+}
+
+#surfond
+{
+	width:800px;
+	margin:0 auto;
+	background-color: white;
+	text-align: center;
+	align-content: center;
+}
+
+ #graph {
+    width: 100%;
+    height: 500px;
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Mathématiques</title>
+        <link rel="stylesheet" href="style.css">
+        <!-- Pour des tracés -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <!-- Pour le Latex -->
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </head>
+
+    <body>
+        
+        <div id="surfond">
+        <a href=""><h1>Clique test</h1></a>
+
+        <h2>test Latex avec Mathjax</h2>
+        <p class="math">$$ax^2 + bx + c = 0$$</p>
+
+        <div id="graph"></div>
+       
+        <script>
+            var xValues = [];
+            var yValues = [];
+    
+            for (var x = -10; x <= 10; x += 0.1) {
+                xValues.push(x);
+                yValues.push(Math.pow(x, 3));
+            }
+    
+            var trace = {
+                x: xValues,
+                y: yValues,
+                mode: 'lines',
+                line: {shape: 'spline'}
+            };
+    
+            var data = [trace];
+    
+            var layout = {
+                title: 'y = x^3',
+                xaxis: {title: 'x'},
+                yaxis: {title: 'y'},
+                plot_bgcolor: 'rgba(255, 255, 255, 0.5)' // Couleur de fond : blanc 
+            };
+    
+            Plotly.newPlot('graph', data, layout);
+        </script>
+        </div>
+        
+    </body>
+</html>
