@@ -55,8 +55,59 @@
 		</p>
 
 
-		<h2>Marches Aléatoires</h2>
-		<p> via markov ??>
+		<h2>Jeu de Taquin</h2>
+		
+		<div id="puzzle"></div>
+	    <div id="message"></div>
+
+	   <body>
+    <div id="puzzle"></div>
+    <div id="message"></div>
+
+    <script>
+        var puzzle = document.getElementById('puzzle');
+        var message = document.getElementById('message');
+        var tiles = [];
+        for (var i = 1; i <= 8; i++) {
+            var tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.textContent = i;
+            tiles.push(tile);
+        }
+        var emptyTile = document.createElement('div');
+        emptyTile.className = 'tile';
+        emptyTile.textContent = '';
+        tiles.push(emptyTile);
+
+        tiles.sort(() => Math.random() - 0.5);
+        tiles.forEach(tile => puzzle.appendChild(tile));
+
+        tiles.forEach(function(tile, i) {
+            tile.addEventListener('click', function() {
+                var emptyIndex = tiles.indexOf(emptyTile);
+                var rowIndex = Math.floor(i / 3);
+                var emptyRowIndex = Math.floor(emptyIndex / 3);
+                var colIndex = i % 3;
+                var emptyColIndex = emptyIndex % 3;
+
+                if ((rowIndex === emptyRowIndex && Math.abs(colIndex - emptyColIndex) === 1) ||
+                    (colIndex === emptyColIndex && Math.abs(rowIndex - emptyRowIndex) === 1)) {
+                    [tiles[i].textContent, tiles[emptyIndex].textContent] = [tiles[emptyIndex].textContent, tiles[i].textContent];
+                    emptyTile = tiles[i];
+                    checkWin();
+                }
+            });
+        });
+
+        function checkWin() {
+            for (var i = 0; i < 8; i++) {
+                if (tiles[i].textContent != i + 1) {
+                    return;
+                }
+            }
+            message.textContent = 'Gagné !';
+        }
+    	</script>
 
 
 		<h2>Cryptographie sur Courbes Elliptiques</h2>
