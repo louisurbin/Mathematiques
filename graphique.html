@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div id="myDiv"></div>
+
+<input type="text" id="functionInput" placeholder="Enter a function in terms of x">
+<button onclick="plotFunction()">Plot</button>
+
+<script>
+    function plotFunction() {
+        var xValues = [];
+        var yValues = [];
+
+        var func = document.getElementById('functionInput').value;
+
+        for (var x = -10; x <= 10; x += 0.01) {
+            xValues.push(x);
+            yValues.push(eval(func)); // Evaluate the user's function
+        }
+
+        var trace1 = {
+            x: xValues,
+            y: yValues,
+            mode: 'lines',
+            name: 'Function'
+        };
+
+        var data = [trace1];
+
+        var layout = {
+            title: func,
+            xaxis: {
+                title: 'x'
+            },
+            yaxis: {
+                title: 'f(x)'
+            }
+        };
+
+        Plotly.newPlot('myDiv', data, layout);
+    }
+</script>
+
+</body>
+</html>

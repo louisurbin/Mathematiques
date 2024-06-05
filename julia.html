@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <canvas id="juliaCanvas" width="800" height="800"></canvas>
+    <script>
+        var canvas = document.getElementById('juliaCanvas');
+        var ctx = canvas.getContext('2d');
+        var width = canvas.width;
+        var height = canvas.height;
+        var imageData = ctx.createImageData(width, height);
+        var maxIter = 1000;
+
+        var c = {x: -0.8, y: 0.156}; // Constant for Julia set
+
+        function julia(z) {
+            var n = 0;
+            while (n < maxIter) {
+                var x = (z.x * z.x) - (z.y * z.y) + c.x;
+                var y = 2 * z.x * z.y + c.y;
+                z = {x: x, y: y};
+                if (z.x * z.x + z.y * z.y > 4) break;
+                n++;
+            }
+            return [n <= maxIter ? n : 0];
+        }
+
+        for (var i = 0; i < width; i++) {
+            for (var j = 0; j < height; j++) {
+                var z = {x: (i - width / 2) * 4 / width, y: (j - height / 2) * 4 / height};
+                var [n] = julia(z);
+                var index = (i + j * width) * 4;
+                var color = n * 255 / maxIter;
+                imageData.data[index] = color;
+                imageData.data[index + 1] = color;
+                imageData.data[index + 2] = color;
+                imageData.data[index + 3] = 255;
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+    </script>
+</body>
+</html>
