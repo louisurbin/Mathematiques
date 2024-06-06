@@ -3,6 +3,10 @@ h1
 	color: red;
 }
 
+ul {
+    list-style-type: none;
+}
+
 body {
     text-align: center;
     position: relative;
