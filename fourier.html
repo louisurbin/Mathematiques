@@ -21,11 +21,31 @@
     <body>
         <h1>Série de Fourier</h1>
         <script>
-            let y = [];
+            const USER = 0;
+            const FOURIER = 1;
+
+            let x = [];
             let fourierX;
-            
+            let drawing = []            
             let time = 0;
-            let wave = [];
+            let path = [];
+            let state = -1;  
+
+            function mousePressed() {
+                state = USER;
+                drawing = [];
+                x = [];
+                time = 0;
+                path = [];
+            }
+
+            function mouseReleased() {
+                state = FOURIER;
+                const skip = 1;
+                for (let i = 0; i < drawing.length; i += skip) {
+                    x.push(new Complex (drawing[i].x, drawing[i].y));
+                }
+            }
 
             class Complex {
                 constructor(a, b) {
@@ -47,8 +67,36 @@
 
             function setup() {
                 createCanvas(800, 600);
-                                
-                fourierY = dft(y);
+                state = -1;
+                //background(0); 
+
+                // let squareSize = 200;
+                // let squareCenter = { x: 0, y: 0};
+                // let pointsPerSide = 100;
+
+                // x = [];
+
+                // // haut
+                // for (let i = 0; i < pointsPerSide; i++) {
+                //     x.push(new Complex(squareCenter.x - squareSize / 2 + i * squareSize / pointsPerSide, squareCenter.y - squareSize / 2));
+                // }
+
+                // // droit
+                // for (let i = 0; i < pointsPerSide; i++) {
+                //     x.push(new Complex(squareCenter.x + squareSize / 2, squareCenter.y - squareSize / 2 + i * squareSize / pointsPerSide));
+                // }
+
+                // // dessous
+                // for (let i = 0; i < pointsPerSide; i++) {
+                //     x.push(new Complex(squareCenter.x + squareSize / 2 - i * squareSize / pointsPerSide, squareCenter.y + squareSize / 2));
+                // }
+
+                // // gauche
+                // for (let i = 0; i < pointsPerSide; i++) {
+                //     x.push(new Complex(squareCenter.x - squareSize / 2, squareCenter.y + squareSize / 2 - i * squareSize / pointsPerSide));
+                // }
+
+                fourierX = dft(x);
             }
 
             function dft(x) {
@@ -93,25 +141,43 @@
 
             function draw() {
                 background(0);
-                epicycles(400, 300, fourierX);
-                wave.unshift(y);
-                translate(200, 0);
-                line(x - 200, y, 0, wave[0]);
+               
+                if(state == USER){
+                    let point = createVector(mouseX , mouseY);
+                    drawing.push(point);
+                    stroke(255);
+                    noFill();
+                    beginShape();
+                    for (let u of drawing) {
+                        vertex(u.x, u.y)
+                    }
+                    endShape();
+                }
+                else if (state == FOURIER) {
+                let u = epicycles(width/2, height/2, 0, fourierX);
+                path.unshift(u);
 
                 beginShape();
                 noFill();
-                for (let i = 0; i < wave.length; i++) {
-                    vertex(i, wave[i]);
+                for (let i = 0; i < path.length; i++) {
+                    vertex(path[i].x, path[i].y);
                 }
                 endShape();
 
-                const dt = TWO_PI / fourierY.length;
-                time +=0.05; // Le signe change le sens de parcours
+                const dt = TWO_PI / fourierX.length;
+                time += dt; 
 
-                if (wave.length > 500) {
-                    wave.pop();
+                // Remise à zéro après chaque cycle
+                if (time > TWO_PI) {
+                    time = 0;
+                    path = [];
+                }
                 }
             }
         </script>
     </body>
 </html>
+
+
+
+// pb de passage à fourier ou alors dans l'affichage de fourier
