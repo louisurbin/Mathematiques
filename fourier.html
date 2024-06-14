@@ -12,7 +12,8 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                height: 100vh;
+                height: 600;
+                width: 800;
                 margin: 0;
             }
         </style>
@@ -45,6 +46,8 @@
                 for (let i = 0; i < drawing.length; i += skip) {
                     x.push(new Complex (drawing[i].x, drawing[i].y));
                 }
+                fourierX = dft(x);
+                fourierX.sort((a, b) => b.amp - a.amp);
             }
 
             class Complex {
@@ -66,7 +69,7 @@
             }
 
             function setup() {
-                createCanvas(800, 600);
+                createCanvas(1200, 800);
                 state = -1;
                 //background(0); 
 
@@ -121,7 +124,7 @@
             }
 
             function epicycles(x, y, rotation, fourier) {
-                for (let i = 0; i < fourier.length; i++) {
+                for (let i = 1; i < fourier.length; i++) {
                     let prevx = x;
                     let prevy = y;
                     let freq = fourier[i].freq;
@@ -145,7 +148,7 @@
                 if(state == USER){
                     let point = createVector(mouseX , mouseY);
                     drawing.push(point);
-                    stroke(255);
+                    stroke(255, 255, 0);
                     noFill();
                     beginShape();
                     for (let u of drawing) {
@@ -159,6 +162,7 @@
 
                 beginShape();
                 noFill();
+                stroke(255, 255, 0);
                 for (let i = 0; i < path.length; i++) {
                     vertex(path[i].x, path[i].y);
                 }
@@ -177,7 +181,3 @@
         </script>
     </body>
 </html>
-
-
-
-// pb de passage à fourier ou alors dans l'affichage de fourier
