@@ -21,16 +21,16 @@
     </style>
 </head>
 <body>
-    <h1>Portrait de Phase d'un Système Dynamique à Deux Inconnues</h1>
+    <h1>Portrait de Phase d'un Système Dynamique De Dimensions 2</h1>
     <div class="input-group">
-        <label for="equation1">Équation 1 (dx/dt): </label>
+        <label for="equation1">dx/dt = </label>
         <input type="text" id="equation1" placeholder="Ex: x*(1-x-y)">
     </div>
     <div class="input-group">
-        <label for="equation2">Équation 2 (dy/dt): </label>
+        <label for="equation2">dy/dt = </label>
         <input type="text" id="equation2" placeholder="Ex: y*(x-y)">
     </div>
-    <div class="input-group">
+    <div class="input-group"> 
         <button onclick="plotPhasePortrait()">Tracer le Portrait de Phase</button>
     </div>
     <div id="plot"></div>
@@ -50,61 +50,38 @@
                 return [equation1.evaluate({x: x, y: y}), equation2.evaluate({x: x, y: y})];
             }
 
-            // Résoudre les équations différentielles pour différentes conditions initiales
+            // Résoudre les équations différentielles pour différentes conditions initiales avec Runge-Kutta
             function solveSystem(initialConditions, tMax, dt) {
-                const t = numeric.linspace(0, tMax, tMax / dt);
-                const sol = numeric.dopri(0, tMax, initialConditions, system, 1e-6, 2000);
-                return sol.at(t);
+                const solPos = numeric.dopri(0, tMax, initialConditions, system, 1e-6, 2000);
+                const tPos = numeric.linspace(0, tMax, tMax / dt);
+                const solPosMapped = tPos.map(time => solPos.at(time));
+                return solPosMapped;
             }
 
-            const tMax = 25;
+            const tMax = 250;
             const dt = 0.01;
             const initialConditionsList = [
-                [0.1, 0.1],
-                [-0.5, 0.5],
-                [0.9, -0.9],
-                [-0.1, -0.9],
+                [-5, 5], 
+                [5, 5], 
+                [5, -5], 
+                [-5, -5], 
             ];
             const traces = [];
 
             initialConditionsList.forEach(initCond => {
                 const sol = solveSystem(initCond, tMax, dt);
                 traces.push({
-                    x: sol[0],
-                    y: sol[1],
+                    x: sol.map(point => point[0]), 
+                    y: sol.map(point => point[1]), 
                     mode: 'lines',
                     name: `Init: (${initCond[0]}, ${initCond[1]})`
                 });
             });
 
-            // Ajouter les flèches de champ de direction
-            const x = numeric.linspace(0, 20, 200);
-            const y = numeric.linspace(0, 20, 200);
-            const u = [];
-            const v = [];
-            x.forEach(xi => {
-                y.forEach(yi => {
-                    const [dx, dy] = system(0, [xi, yi]);
-                    u.push(dx);
-                    v.push(dy);
-                });
-            });
-
-            traces.push({
-                x: numeric.rep([20, 20], x),
-                y: numeric.rep([20, 20], y),
-                u: u,
-                v: v,
-                type: 'scatter',
-                mode: 'markers',
-                marker: { color: 'black', size: 2 },
-                name: 'Direction Field'
-            });
-
             const layout = {
                 title: 'Portrait de Phase du Système Dynamique',
-                xaxis: { title: 'x', range: [0, 20]},
-                yaxis: { title: 'y', range: [0, 20]}
+                xaxis: { title: 'x', range: [-10, 10]},
+                yaxis: { title: 'y', range: [-10, 10]}
             };
 
             Plotly.newPlot('plot', traces, layout);
